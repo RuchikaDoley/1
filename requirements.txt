@@ -1,0 +1,6 @@
+Flask
+google-generativeai
+intk
+pandas
+python-dotenv
+gunicorn

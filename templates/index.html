@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Tell me how you're feeling today</title>
+  <h1> Moodbot- Your emotionally intelligent assistant </h1>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 2em;
+      background: #f4f4f4;
+    }
+    #chat-box {
+      border: 1px solid #ccc;
+      padding: 1em;
+      background: white;
+      height: 300px;
+      overflow-y: auto;
+      margin-bottom: 1em;
+    }
+    .message {
+      margin: 0.5em 0;
+    }
+    .user {
+      color: blue;
+    }
+    .bot {
+      color: green;
+    }
+    #emotion {
+      font-style: italic;
+      margin-bottom: 1em;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>MoodBot 🤖</h2>
+  <div id="emotion">Detected Emotion: <span id="emotion-text">-</span></div>
+  <div id="chat-box"></div>
+
+  <input type="text" id="user-input" placeholder="Type something..." style="width: 80%;">
+  <button onclick="sendMessage()">Send</button>
+
+  <script>
+    function addMessage(text, sender) {
+      const chatBox = document.getElementById('chat-box');
+      const message = document.createElement('div');
+      message.classList.add('message');
+      message.classList.add(sender);
+      message.textContent = (sender === 'user' ? 'You: ' : 'Bot: ') + text;
+      chatBox.appendChild(message);
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    async function sendMessage() {
+      const input = document.getElementById('user-input');
+      const message = input.value.trim();
+      if (!message) return;
+
+      addMessage(message, 'user');
+      input.value = '';
+
+      const res = await fetch('/chat', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ message })
+      });
+
+      const data = await res.json();
+
+      if (data.response) {
+        document.getElementById('emotion-text').textContent = data.emotion;
+        addMessage(data.response, 'bot');
+      } else {
+        addMessage('Something went wrong!', 'bot');
+      }
+    }
+  </script>
+
+</body>
+</html>
