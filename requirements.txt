@@ -1,6 +1,8 @@
 Flask
 google-generativeai
-intk
+nltk
 pandas
 python-dotenv
 gunicorn
+numpy
+scikit-learn
